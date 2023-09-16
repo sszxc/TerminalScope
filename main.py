@@ -32,14 +32,15 @@ class TerminalScope():
 
     def plot(self, data):
         assert len(data) == self.variable_count, "Please check data length!"
-        pos = []
-        for d in data:
-            pos += [int((d - self.data_range[0])/(self.data_range[1] - self.data_range[0]) * self.plot_length)]
+
+        pos_key = {}
+        for index, d in enumerate(data):
+            pos_key[int((d - self.data_range[0])/(self.data_range[1] - self.data_range[0]) * self.plot_length)] = index
 
         line = '|'
-        for p in range(self.plot_length):
-            if p in pos:  # TODO hash?
-                index = pos.index(p)
+        for pos in range(self.plot_length):
+            if pos in pos_key:
+                index = pos_key[pos]
                 line += self._get_color_print(self.symbol_list[index], index)
             else:
                 line += ' '
@@ -62,7 +63,7 @@ class TerminalScope():
 
 
 if __name__ == "__main__":
-    scope = TerminalScope(['sin(x)', 'sin(x + pi/3)', 'step'],
+    scope = TerminalScope(['sin(x)', '0.5*sin(x + pi/3)', 'ramp'],
                           [-2, 2],
                           ['$', '@', '?'],
                           refresh_mode=False)
