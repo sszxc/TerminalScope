@@ -9,7 +9,7 @@ class TerminalScope():
                  refresh_mode=False):
         self.variable_count = len(variable_name)
         assert self.variable_count < 8, "only provide 7 colors!"
-        self.data_range = data_range  # TODO self-adaption; individual range
+        self.data_range = data_range
         assert data_range[0] < data_range[1]
         if data_symbol is None:
             self.symbol_list = ['*'] * self.variable_count
@@ -17,14 +17,14 @@ class TerminalScope():
             assert len(data_symbol) == self.variable_count, "Please check symbol length!"
             self.symbol_list = data_symbol
 
-        self.top_bar = '     '.join([self._get_color_print(name, index)
-                                    for index, name in enumerate(variable_name)])
-        print(self.top_bar)
-
         self.refresh_mode = refresh_mode
         self.plot_length = os.get_terminal_size()[0] - 2 # plot region size
         self.plot_height = os.get_terminal_size()[1]
         self.lines = deque(maxlen=self.plot_height - 2)  # reserve one line for fixed info
+
+        self.top_bar = ''.join([self._get_color_print(name, index).ljust(11 + int(self.plot_length/self.variable_count))
+                                    for index, name in enumerate(variable_name)])
+        print('\n', self.top_bar, '\n', '-'*(self.plot_length + 2), sep='')
 
     def _get_color_print(self, string, color_index:int):
         color_list = [31, 32, 33, 34, 35, 36, 37]
@@ -62,14 +62,15 @@ class TerminalScope():
 
 
 if __name__ == "__main__":
-    scope = TerminalScope(['sin(x)', 'sin(x + pi/3)', 'another'],
+    scope = TerminalScope(['sin(x)', 'sin(x + pi/3)', 'step'],
                           [-2, 2],
-                          ['$', 'm', '?'],
+                          ['$', '@', '?'],
                           refresh_mode=False)
 
     import math
     import time
     for _ in range(1000):
         x = time.time() * 4.0
-        scope.plot([math.sin(x), math.sin(math.pi/3 + x), int(x) % 2])
-        time.sleep(0.01)
+
+        scope.plot([math.sin(x), 0.5 * math.sin(math.pi/3 + x), x / 2 % 4 - 2])
+        time.sleep(0.05)
