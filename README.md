@@ -1,6 +1,6 @@
 # TerminalScope
 
-![screenshot](./screenshot.jpg)
+![screenshot](./screenshot.png)
 
 A very simple Python oscilloscope for displaying various dynamic data in the command line.
 
