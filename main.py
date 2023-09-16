@@ -7,6 +7,7 @@ from collections import deque
 class TerminalScope():
     def __init__(self, variable_name: list, data_range: [int, int], data_symbol=None,
                  refresh_mode=False):
+        # check input
         self.variable_count = len(variable_name)
         assert self.variable_count < 8, "only provide 7 colors!"
         self.data_range = data_range
@@ -22,6 +23,7 @@ class TerminalScope():
         self.plot_height = os.get_terminal_size()[1]
         self.lines = deque(maxlen=self.plot_height - 2)  # reserve one line for fixed info
 
+        # print the top bar
         self.top_bar = ''.join([self._get_color_print(name, index).ljust(11 + int(self.plot_length/self.variable_count))
                                     for index, name in enumerate(variable_name)])
         print('\n', self.top_bar, '\n', '-'*(self.plot_length + 2), sep='')
@@ -33,10 +35,13 @@ class TerminalScope():
     def plot(self, data):
         assert len(data) == self.variable_count, "Please check data length!"
 
+        # get the position of each data
         pos_key = {}
         for index, d in enumerate(data):
-            pos_key[int((d - self.data_range[0])/(self.data_range[1] - self.data_range[0]) * self.plot_length)] = index
+            pos = round((d - self.data_range[0])/(self.data_range[1] - self.data_range[0]) * self.plot_length)
+            pos_key[pos] = index
 
+        # construct the line
         line = '|'
         for pos in range(self.plot_length):
             if pos in pos_key:
@@ -46,6 +51,7 @@ class TerminalScope():
                 line += ' '
         line += '|'
 
+        # print the line
         if self.refresh_mode:
             self.lines.append(line)
             self._fresh_screen()
@@ -72,6 +78,5 @@ if __name__ == "__main__":
     import time
     for _ in range(1000):
         x = time.time() * 4.0
-
         scope.plot([math.sin(x), 0.5 * math.sin(math.pi/3 + x), x / 2 % 4 - 2])
         time.sleep(0.05)
