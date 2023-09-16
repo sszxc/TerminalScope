@@ -1,5 +1,3 @@
-# plot 1-dim variables on the command line
-
 import os
 from collections import deque
 

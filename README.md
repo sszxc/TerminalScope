@@ -1,6 +1,6 @@
 # TerminalScope
 
-A very simple Python oscilloscope for displaying various dynamic data in the command line.
+A very simple Python oscilloscope for displaying 1-dim dynamic data in the command line.
 
 - Easy to integrate (no third-party libraries required, only a single Python file)
 - Typical use cases:
