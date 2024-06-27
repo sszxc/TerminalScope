@@ -8,8 +8,3 @@ A very simple Python oscilloscope for displaying 1-dim dynamic data in the comma
   - Debugging your motor PID controller and needing a simple graphical user interface
 
 ![screenshot](./screenshot.png)
-
-## TODO-list
-
-- [ ] data range self-adaption
-- [ ] individual data range
