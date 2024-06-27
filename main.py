@@ -7,10 +7,12 @@ class TerminalScope():
     https://github.com/sszxc/TerminalScope
     """
     def __init__(self, variable_name: list, data_symbol=None, data_range: tuple[float, float]=[-1, 1],
-                 auto_range=True, plot_width=None, refresh_mode=False, no_top_bar=False):
+                 auto_range=True, plot_width=None, refresh_mode=False, no_top_bar=False, no_color=False):
         # check input
         self.variable_count = len(variable_name)
-        assert self.variable_count < 8, "only provide 7 colors!"
+        self.no_color = no_color
+        if not no_color:
+            assert self.variable_count < 8, "only provide 7 colors!"
         # data range
         self.data_range = data_range
         assert data_range[0] < data_range[1]
@@ -31,11 +33,14 @@ class TerminalScope():
         self.lines = deque(maxlen=self.plot_height - 2)  # reserve one line for fixed info
         # construct top bar
         if not no_top_bar:
-            self.top_bar = ''.join([self._get_color_print(name, index).ljust(11 + int(self.plot_width/self.variable_count))
+            column_width = int(self.plot_width/self.variable_count)
+            self.top_bar = ''.join([self._get_color_print(name, index) + ' '*(column_width - len(name))
                                         for index, name in enumerate(variable_name)])
             print('\n', self.top_bar, '\n', '-'*(self.plot_width + 2), sep='')
 
     def _get_color_print(self, string, color_index:int):
+        if self.no_color:
+            return string
         color_list = [31, 32, 33, 34, 35, 36, 37]
         return '\33[1;' + str(color_list[color_index]) + 'm' + string + '\033[0m'
 
@@ -84,7 +89,7 @@ if __name__ == "__main__":
     scope = TerminalScope(['sin(x)', 'ramp', '0.5*sin(x + pi/3)'],
                           ['$', '@', '?'],
                           [-2, 2],
-                          refresh_mode=False, plot_width=50)
+                          refresh_mode=False, plot_width=70)
 
     import math
     import time
