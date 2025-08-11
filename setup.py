@@ -8,7 +8,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name="tscope",
-    version="0.1.2",
+    # version 将被 setuptools_scm 自动设置
     author="Henrik",
     author_email="im.zhangxc@gmail.com",
     description="A simple Python oscilloscope for displaying 1-dim dynamic data in the command line",

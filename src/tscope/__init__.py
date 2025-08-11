@@ -4,7 +4,11 @@ TerminalScope - A simple Python oscilloscope for displaying 1-dim dynamic data i
 
 from .main import TerminalScope
 
-__version__ = "0.1.0"
+try:
+    from ._version import __version__
+except ImportError:
+    __version__ = "unknown"
+
 __author__ = "Henrik"
 __email__ = "im.zhangxc@gmail.com"
 

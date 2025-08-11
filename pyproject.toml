@@ -28,3 +28,7 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/sszxc/TerminalScope"
 Issues = "https://github.com/sszxc/TerminalScope/issues"
+
+[tool.setuptools_scm]
+write_to = "src/tscope/_version.py"
+write_to_template = "__version__ = '{version}'"
