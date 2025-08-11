@@ -6,8 +6,19 @@ class TerminalScope():
     """A simple Python-based oscilloscope for visualizing dynamic data in the terminal.
     https://github.com/sszxc/TerminalScope
     """
-    def __init__(self, variable_name: list, data_symbol=None, data_range: tuple[float, float]=[-1, 1],
+    def __init__(self, variable_name: list, data_symbol=None, data_range: tuple[float, float]=(-1, 1),
                  auto_range=True, plot_width=None, refresh_mode=False, no_top_bar=False, no_color=False):
+        """
+        Args:
+            - `variable_name` (list): List of variable names to display
+            - `data_symbol` (list, optional): List of symbols for each variable. Defaults to `['*'] * len(variable_name)`
+            - `data_range` (tuple, optional): Initial data range as (min, max). Defaults to `(-1, 1)`
+            - `auto_range` (bool, optional): Whether to automatically adjust range based on data. Defaults to `True`
+            - `plot_width` (int, optional): Width of the plot in characters. Defaults to terminal width - 2
+            - `refresh_mode` (bool, optional): Whether to use screen refresh mode, i.e. clear the screen before every plot. Defaults to `False`
+            - `no_top_bar` (bool, optional): Whether to hide the top bar with variable names. Defaults to `False`
+            - `no_color` (bool, optional): Whether to disable color output. Defaults to `False`
+        """
         # check input
         self.variable_count = len(variable_name)
         self.no_color = no_color
@@ -45,6 +56,9 @@ class TerminalScope():
         return '\33[1;' + str(color_list[color_index]) + 'm' + string + '\033[0m'
 
     def plot(self, data):
+        '''
+        Plot a new data point. `data` should be a list with length matching `variable_name`
+        '''
         # construct the line
         line = self.string(data)
         # print the line
@@ -59,6 +73,9 @@ class TerminalScope():
             print(line)
 
     def string(self, data):
+        """
+        Return the string representation of the plot line without printing, useful when you have a custom 'print' function
+        """
         assert len(data) == self.variable_count, "Please check data length!"
         if self.auto_range:
             self.data_range = [min(*data, self.data_range[0]), max(*data, self.data_range[1])]
@@ -83,19 +100,3 @@ class TerminalScope():
             os.system('clear')
         else:
             os.system('cls')
-
-
-if __name__ == "__main__":
-    scope = TerminalScope(['sin(x)', 'ramp', '0.5*sin(x + pi/3)'],
-                          ['$', '@', '?'],
-                          [-2, 2],
-                          refresh_mode=False, plot_width=70)
-
-    import math
-    import time
-    for _ in range(1000):
-        x = time.time() * 4.0
-        scope.plot([math.sin(x), 0.5 * math.sin(math.pi/3 + x), x / 2 % 4 - 2])
-        # s = scope.string([math.sin(x), 0.5 * math.sin(math.pi/3 + x), x / 2 % 4 - 2])
-        # print(s, "add some endings")
-        time.sleep(0.05)
